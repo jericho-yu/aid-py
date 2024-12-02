@@ -1,5 +1,5 @@
 import threading
-
+from httpClient.http_client import HttpClient
 
 class HttpClientMultiple:
     def __init__(self):
@@ -27,3 +27,12 @@ class HttpClientMultiple:
 
     def get_clients(self):
         return self.clients
+
+if __name__ == "__main__":
+    url = "http://127.0.0.1:8000/items/1"
+    timeout = 5
+    hc = HttpClient(url).set_timeout(timeout).set_method("GET").send()
+    hcm = HttpClientMultiple()
+    hcm.add(hc).send()
+    for i in hcm.get_clients():
+        print(i.get_json_response())

@@ -73,3 +73,10 @@ class HttpClient:
         with open(filename, "wb") as file:
             file.write(self.response.content)
         return self
+
+if __name__ == "__main__":
+    url = "http://127.0.0.1:8000/items/1"
+    timeout = 5
+    hc = HttpClient(url).set_timeout(timeout).set_method("GET").send()
+    res = hc.get_response()
+    print(hc.get_json_response())
