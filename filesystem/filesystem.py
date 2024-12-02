@@ -141,4 +141,4 @@ class FileSystem:
 
 
 if __name__ == "__main__":
-    print(new_by_relative("").joins("ab.txt").write_string("abc"))
+    print(new_by_relative("").joins("abc.txt").write_string("abc"))
