@@ -1,5 +1,5 @@
 import threading
-from httpClient.http_client import HttpClient
+from http_client import HttpClient
 
 class HttpClientMultiple:
     def __init__(self):
