@@ -36,14 +36,14 @@ class IpLimiter:
 
         return None, True
 
-    def get_last_visitor(self, ip: str):
+    def take_last_visitor(self, ip: str):
         with self.lock:
             v = self.visit_map.get(ip)
             if v:
                 return v.last_visit
             return None
 
-    def get_visit_times(self, ip: str):
+    def take_visit_times(self, ip: str):
         with self.lock:
             v = self.visit_map.get(ip)
             if v:

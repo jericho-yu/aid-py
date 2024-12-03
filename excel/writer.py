@@ -13,10 +13,10 @@ class Writer:
 		self.workbook = openpyxl.Workbook()
 		self.sheet = self.workbook.active
 
-	def get_filename(self) -> str:
+	def take_filename(self) -> str:
 		return self.filename
 
-	def set_filename(self, filename: str) -> "Writer":
+	def give_filename(self, filename: str) -> "Writer":
 		self.filename = filename
 		return self
 
@@ -38,26 +38,26 @@ class Writer:
 		self.sheet = self.workbook.worksheets[sheet_index]
 		return self
 
-	def set_sheet_name(self, sheet_name: str) -> "Writer":
+	def give_sheet_name(self, sheet_name: str) -> "Writer":
 		self.sheet.title = sheet_name
 		return self
 
-	def set_column_width_by_index(self, col: int, width: float) -> "Writer":
-		self.set_columns_width_by_index(col, col, width)
+	def give_column_width_by_index(self, col: int, width: float) -> "Writer":
+		self.give_columns_width_by_index(col, col, width)
 		return self
 
-	def set_column_width_by_text(self, col: str, width: float) -> "Writer":
-		self.set_columns_width_by_text(col, col, width)
+	def give_column_width_by_text(self, col: str, width: float) -> "Writer":
+		self.give_columns_width_by_text(col, col, width)
 		return self
 
-	def set_columns_width_by_index(
+	def give_columns_width_by_index(
 		self, start_col: int, end_col: int, width: float
 	) -> "Writer":
 		for col in range(start_col, end_col + 1):
 			self.sheet.column_dimensions[get_column_letter(col)].width = width
 		return self
 
-	def set_columns_width_by_text(
+	def give_columns_width_by_text(
 		self, start_col: str, end_col: str, width: float
 	) -> "Writer":
 		for col in range(
@@ -67,7 +67,7 @@ class Writer:
 			self.sheet.column_dimensions[get_column_letter(col)].width = width
 		return self
 
-	def set_rows(self, rows: List[List[Any]]) -> "Writer":
+	def give_rows(self, rows: List[List[Any]]) -> "Writer":
 		for row in rows:
 			self.add_row(row)
 		return self
@@ -76,7 +76,7 @@ class Writer:
 		self.sheet.append(row)
 		return self
 
-	def set_title_row(self, titles: List[str], row_number: int) -> "Writer":
+	def give_title_row(self, titles: List[str], row_number: int) -> "Writer":
 		for col_num, title in enumerate(titles, 1):
 			cell = self.sheet.cell(row=row_number, column=col_num, value=title)
 			cell.font = Font(bold=True)
@@ -92,13 +92,13 @@ class Writer:
 		writer.headers["Content-Disposition"] = f"attachment; filename={self.filename}"
 		self.workbook.save(writer)
 
-	def get_workbook(self) -> openpyxl.Workbook:
+	def take_workbook(self) -> openpyxl.Workbook:
 		return self.workbook
 
 
 if __name__ == "__main__":
 	# Example usage
 	writer = Writer("example.xlsx")
-	writer.active_sheet_by_index(0).set_title_row(["Title1", "Title2"], 1).add_row(
+	writer.active_sheet_by_index(0).give_title_row(["Title1", "Title2"], 1).add_row(
 		["Data1", "Data2"]
 	).save()

@@ -39,7 +39,7 @@ class AnyArray:
 		with self.lock:
 			return 0 <= index < len(self.array)
 
-	def set(self, index: int, value: Any) -> 'AnyArray':
+	def give(self, index: int, value: Any) -> 'AnyArray':
 		"""
 		设置指定索引的值
 		:param index: int
@@ -51,7 +51,7 @@ class AnyArray:
 				self.array[index] = value
 		return self
 
-	def get(self, index: int) -> Any:
+	def take(self, index: int) -> Any:
 		"""
 		获取指定索引的值
 		:param index: int
@@ -121,7 +121,7 @@ class AnyArray:
 			random.shuffle(self.array)
 		return self
 
-	def len(self) -> int:
+	def length(self) -> int:
 		"""
 		获取数组长度
 		:return: int
@@ -140,7 +140,7 @@ class AnyArray:
 
 		return self
 
-	def remove_empty(self) -> 'AnyArray':
+	def destroy_empty(self) -> 'AnyArray':
 		"""
 		移除空元素
 		:return: AnyArray
@@ -166,7 +166,7 @@ class AnyArray:
 		:return: str
 		"""
 		with self.lock:
-			return sep.join(self.copy().remove_empty().array)
+			return sep.join(self.copy().destroy_empty().array)
 
 	def in_array(self, target: Any) -> bool:
 		"""
@@ -236,7 +236,7 @@ class AnyArray:
 					result.append(arr)
 			return self
 
-	def remove_by_indexes(self, indexes: int) -> 'AnyArray':
+	def destroy_by_indexes(self, indexes: int) -> 'AnyArray':
 		"""
 		移除指定索引的元素
 		:param indexes: int
@@ -247,7 +247,7 @@ class AnyArray:
 
 		return self
 
-	def remove_by_value(self, values: List[Any]) -> 'AnyArray':
+	def destroy_by_value(self, values: List[Any]) -> 'AnyArray':
 		"""
 		移除指定值的元素
 		:param values: List[Any]
@@ -258,7 +258,7 @@ class AnyArray:
 
 		return self
 
-	def remove_by_values(self, values: List[Any]) -> 'AnyArray':
+	def destroy_by_values(self, values: List[Any]) -> 'AnyArray':
 		"""
 		移除指定值的元素
 		:param values: List[Any]

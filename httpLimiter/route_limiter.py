@@ -8,7 +8,7 @@ class RouteLimiter:
         self.route_set_map = {}
         self.lock = RLock()
 
-    def store(self, router: str, t: int, max_visit_times: int):
+    def give(self, router: str, t: int, max_visit_times: int):
         with self.lock:
             self.route_set_map[router] = {
                 "ip_limiter": IpLimiter(),
