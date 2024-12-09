@@ -73,3 +73,4 @@ class HttpClient:
         with open(filename, "wb") as file:
             file.write(self.response.content)
         return self
+
