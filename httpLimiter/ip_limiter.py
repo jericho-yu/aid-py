@@ -6,7 +6,7 @@ def new_ip_limiter() -> "IpLimiter":
     return IpLimiter()
 
 
-class Visiter:
+class Visitor:
     def __init__(self):
         self.last_visit = time.time()
         self.visit_times = 1
@@ -24,7 +24,7 @@ class IpLimiter:
         with self.lock:
             v = self.visit_map.get(ip)
             if v is None:
-                self.visit_map[ip] = Visiter()
+                self.visit_map[ip] = Visitor()
             else:
                 if time.time() - v.last_visit > t:
                     v.visit_times = 1
