@@ -1,70 +1,76 @@
+from cryptography.hazmat.primitives.asymmetric import rsa, padding
+from cryptography.hazmat.primitives import serialization, hashes
 import base64
-import json
-import zlib
-from Crypto.Cipher import PKCS1_OAEP
-import pem
-
-
-class RsaHelper:
-    @staticmethod
-    def encrypt_by_pem(public_key, data):
-        cipher = PKCS1_OAEP.new(public_key)
-        return cipher.encrypt(data)
-
-    @staticmethod
-    def decrypt_by_pem(private_key, encrypted_data):
-        cipher = PKCS1_OAEP.new(private_key)
-        return cipher.decrypt(encrypted_data)
-
 
 class Rsa:
-    def demo_encrypt_rsa(self, un_encrypt):
-        base64_public_key = "your_base64_public_key_here"
-        pem_base64 = (
-            pem.PemBase64()
-            .set_base64_public_key(base64_public_key)
-            .generate_pem_public_key()
-        )
-        pem_public_key = pem_base64.get_pem_public_key()
+    """
+    RSA Encryption and Decryption class
+    """
+    def __init__(self):
+        pass
 
-        encrypted = RsaHelper.encrypt_by_pem(pem_public_key, un_encrypt)
-        base64_encrypted = base64.b64encode(encrypted).decode("utf-8")
-        return base64_encrypted
+    def encrypt_by_base64(self, base64_public_key: str, plaintext: bytes) -> bytes:
+        """
+        Encrypt data using a Base64-encoded public key.
+        """
+        try:
+            # Decode the Base64 public key
+            pem_public_key = base64.b64decode(base64_public_key)
+            return self.encrypt_by_pem(pem_public_key, plaintext)
+        except Exception as e:
+            raise ValueError(f"Error in encrypt_by_base64: {e}")
 
-    def demo_decrypt_rsa(self, base64_encrypted):
-        base64_private_key = "your_base64_private_key_here"
-        pem_base64 = (
-            pem.PemBase64()
-            .set_base64_private_key(base64_private_key)
-            .generate_pem_private_key()
-        )
-        pem_private_key = pem_base64.get_pem_private_key()
+    def encrypt_by_pem(self, pem_public_key: bytes, plaintext: bytes) -> bytes:
+        """
+        Encrypt data using a PEM-encoded public key.
+        """
+        try:
+            # Load the PEM public key
+            public_key = serialization.load_pem_public_key(pem_public_key)
+            # Encrypt the plaintext
+            ciphertext = public_key.encrypt(
+                plaintext,
+                padding.OAEP(
+                    mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                    algorithm=hashes.SHA256(),
+                    label=None
+                )
+            )
+            return ciphertext
+        except Exception as e:
+            raise ValueError(f"Error in encrypt_by_pem: {e}")
 
-        encrypted = base64.b64decode(base64_encrypted)
-        decrypted = RsaHelper.decrypt_by_pem(pem_private_key, encrypted)
-        return decrypted.decode("utf-8")
+    def decrypt_by_base64(self, base64_private_key: str, ciphertext: bytes) -> bytes:
+        """
+        Decrypt data using a Base64-encoded private key.
+        """
+        try:
+            # Decode the Base64 private key
+            pem_private_key = base64.b64decode(base64_private_key)
+            return self.decrypt_by_pem(pem_private_key, ciphertext)
+        except Exception as e:
+            raise ValueError(f"Error in decrypt_by_base64: {e}")
 
-    def demo(self):
-        un_encrypt = {
-            "Username": "cbit",
-            "Password": "cbit-pwd",
-            "AesKey": "87dwQRkoNFNoIcq1A+zFHA==",
-        }
+    def decrypt_by_pem(self, pem_private_key: bytes, ciphertext: bytes) -> bytes:
+        """
+        Decrypt data using a PEM-encoded private key.
+        """
+        try:
+            # Load the PEM private key
+            private_key = serialization.load_pem_private_key(pem_private_key, password=None)
+            # Decrypt the ciphertext
+            plaintext = private_key.decrypt(
+                ciphertext,
+                padding.OAEP(
+                    mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                    algorithm=hashes.SHA256(),
+                    label=None
+                )
+            )
+            return plaintext
+        except Exception as e:
+            raise ValueError(f"Error in decrypt_by_pem: {e}")
 
-        json_byte = json.dumps(un_encrypt).encode("utf-8")
-        zip_byte = zlib.compress(json_byte)
-
-        base64_encrypted = self.demo_encrypt_rsa(zip_byte)
-        print(f"[RSA] encrypting: {base64_encrypted}")
-
-        decrypted = self.demo_decrypt_rsa(base64_encrypted)
-        print("[RSA] decrypted")
-
-        unzip_byte = zlib.decompress(decrypted.encode("utf-8"))
-        print(f"[RSA] decrypted: {unzip_byte.decode('utf-8')}")
-
-
-if __name__ == "__main__":
-    # Example usage
-    rsa = Rsa()
-    rsa.demo()
+# Example usage
+rsa_instance = Rsa()
+rsa_instance
