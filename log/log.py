@@ -1,86 +1,36 @@
-import sys
-import os
-import re
-import time
-import threading
 import logging
-from logging.handlers import TimedRotatingFileHandler
+import os
+from datetime import datetime
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from filesystem import filesystem
+class Logger:
+    def __init__(self, dir):
+        self.dir = os.path.join(dir, datetime.now().strftime('%Y-%m-%d'))
+        if not os.path.exists(self.dir):
+            os.makedirs(self.dir)
 
+    def _generate_logger(self, level):
+        logger = logging.getLogger(level)
+        logger.setLevel(logging.INFO)
+        formatter = logging.Formatter('%(asctime)s [%(levelname)s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+        file_handler = logging.FileHandler(os.path.join(self.dir, f'{level}.log'))
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+        return logger
 
-class Cutter:
-    def __init__(self, director, level, format="%Y-%m-%d"):
-        self.level = level
-        self.format = format
-        self.director = director
-        self.file = None
-        self.mutex = threading.RLock()
+    def info(self, content):
+        logger = self._generate_logger('info')
+        logger.info(content)
 
-    def write(self, message):
-        with self.mutex:
-            if self.file:
-                self.file.close()
-                self.file = None
+    def warn(self, content):
+        logger = self._generate_logger('warn')
+        logger.warning(content)
 
-            business = ""
-            if "business" in message:
-                match = re.search(r'"business": "([^,]+)"', message)
-                if match:
-                    business = match.group(1)
-                    message = re.sub(r'"business": "([^,]+)"', "", message)
+    def error(self, content):
+        logger = self._generate_logger('error')
+        logger.error(content)
 
-            format_date = time.strftime(self.format)
-            filename = os.path.join(
-                self.director, format_date, business, f"{self.level}.log"
-            )
-            os.makedirs(os.path.dirname(filename), exist_ok=True)
-            self.file = open(filename, "a")
-            self.file.write(message)
-            self.file.flush()
-
-
-class ZapProvider:
-    def __init__(self, path: str, in_console: bool):
-        self.path = path
-        self.in_console = in_console
-        self.logger = logging.getLogger("ZapProvider")
-        self.logger.setLevel(logging.DEBUG)
-        self._setup_loggers()
-
-    def _setup_loggers(self):
-        levels = ["DEBUG", "INFO", "WARN", "ERROR", "CRITICAL"]
-        for level in levels:
-            
-            fs = filesystem.new_by_relative(self.path)
-            if not fs.is_dir:
-                fs.mkdir()
-            
-            handler = TimedRotatingFileHandler(
-                os.path.join(self.path, f"{level.lower()}.log"),
-                when="midnight",
-                interval=1,
-                backupCount=7,
-            )
-            handler.setLevel(getattr(logging, level))
-            formatter = logging.Formatter(
-                "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-            )
-            handler.setFormatter(formatter)
-            self.logger.addHandler(handler)
-
-            if self.in_console:
-                console_handler = logging.StreamHandler()
-                console_handler.setLevel(getattr(logging, level))
-                console_handler.setFormatter(formatter)
-                self.logger.addHandler(console_handler)
-
-    def log(self, level, message:str):
-        getattr(self.logger, level.lower())(message)
-
-
-if __name__ == "__main__":
-    # Example usage
-    zap_provider = ZapProvider("logs", True)
-    zap_provider.log("info", '{"business": "example"} This is an info message')
+# 使用示例
+logger = Logger("./logs")
+logger.info({"msg":"info message"})
+logger.warn("warn message")
+logger.error("error message")
