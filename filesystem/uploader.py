@@ -32,13 +32,13 @@ class FileManager:
 		with open(src_dir, 'rb') as f:
 			file_bytes = f.read()
 
-		return FileManager(config).set_src_dir(src_dir).set_dst_dir(dst_dir).set_file_bytes(file_bytes)
+		return FileManager(config).give_src_dir(src_dir).give_dst_dir(dst_dir).give_file_bytes(file_bytes)
 
 	@staticmethod
 	def new_by_bytes(src_file_bytes, dst_dir, config):
-		return FileManager(config).set_dst_dir(dst_dir).set_file_bytes(src_file_bytes)
+		return FileManager(config).give_dst_dir(dst_dir).give_file_bytes(src_file_bytes)
 
-	def set_src_dir(self, src_dir):
+	def give_src_dir(self, src_dir):
 		if not os.path.exists(src_dir):
 			raise FileNotFoundError("Target file does not exist")
 
@@ -49,11 +49,11 @@ class FileManager:
 		self.file_size = len(self.file_bytes)
 		return self
 
-	def set_dst_dir(self, dst_dir):
+	def give_dst_dir(self, dst_dir):
 		self.dst_dir = dst_dir
 		return self
 
-	def set_file_bytes(self, file_bytes):
+	def give_file_bytes(self, file_bytes):
 		self.file_bytes = file_bytes
 		self.file_size = len(file_bytes)
 		return self

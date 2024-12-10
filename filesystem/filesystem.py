@@ -23,13 +23,13 @@ class FileSystem:
     def copy(self) -> "FileSystem":
         return FileSystem(self.dir)
 
-    def set_dir_by_relative(self, dir_path: str) -> "FileSystem":
+    def give_dir_by_relative(self, dir_path: str) -> "FileSystem":
         root_path = Path(".").resolve()
         self.dir = (root_path / dir_path).resolve()
         self._init()
         return self
 
-    def set_dir_by_abs(self, dir_path: str) -> "FileSystem":
+    def give_dir_by_abs(self, dir_path: str) -> "FileSystem":
         self.dir = Path(dir_path).resolve()
         self._init()
         return self
@@ -46,11 +46,11 @@ class FileSystem:
         return self
 
     @staticmethod
-    def get_root_path() -> str:
+    def take_root_path() -> str:
         return str(Path(".").resolve())
 
     @staticmethod
-    def get_current_path() -> str:
+    def take_current_path() -> str:
         return str(Path(__file__).resolve().parent)
 
     def _init(self) -> "FileSystem":
@@ -67,7 +67,7 @@ class FileSystem:
             self.dir.mkdir(parents=True, exist_ok=True)
             self._init()
 
-    def get_dir(self) -> str:
+    def take_dir(self) -> str:
         return str(self.dir)
 
     def check_path_type(self) -> None:

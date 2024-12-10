@@ -31,7 +31,7 @@ class AnyDict:
 
 			return self
 
-	def get(self, key: Any) -> Any:
+	def take(self, key: Any) -> Any:
 		"""
 		获取值
 		:param key: Any
@@ -48,7 +48,7 @@ class AnyDict:
 		with self.lock:
 			return self.dictionary
 
-	def len(self) -> int:
+	def length(self) -> int:
 		"""
 		获取字典长度
 		:return:
@@ -86,7 +86,7 @@ class AnyDict:
 		with self.lock:
 			return sep.join(self.copy().remove_empty().to_dict())
 
-	def get_values(self) -> List[Any]:
+	def take_values(self) -> List[Any]:
 		"""
 		获取所有的值
 		:return:
@@ -94,7 +94,7 @@ class AnyDict:
 		with self.lock:
 			return [v for _, v in self.dictionary.items()]
 
-	def get_keys(self) -> List[Any]:
+	def take_keys(self) -> List[Any]:
 		"""
 		获取所有的键
 		:return: List[Any]
@@ -136,7 +136,7 @@ class AnyDict:
 		with self.lock:
 			return any([v for _, v in self.dictionary.items() if v])
 
-	def get_keys_by_value(self, value: Any) -> List[Any]:
+	def take_keys_by_value(self, value: Any) -> List[Any]:
 		"""
 		通过值获取键
 		:param value: Any
@@ -145,7 +145,7 @@ class AnyDict:
 		with self.lock:
 			return [k for k, v in self.dictionary.items() if v == value]
 
-	def remove_by_key(self, key: Any) -> "AnyDict":
+	def destroy_by_key(self, key: Any) -> "AnyDict":
 		"""
 		通过键删除
 		:param key: Any
@@ -155,7 +155,7 @@ class AnyDict:
 			self.dictionary.pop(key)
 			return self
 
-	def remove_by_keys(self, keys: List[Any]) -> "AnyDict":
+	def destroy_by_keys(self, keys: List[Any]) -> "AnyDict":
 		"""
 		通过键删除
 		:param keys: List[Any]
@@ -166,7 +166,7 @@ class AnyDict:
 				self.dictionary.pop(key)
 			return self
 
-	def remove_by_value(self, value: List[Any]) -> "AnyDict":
+	def destroy_by_value(self, value: List[Any]) -> "AnyDict":
 		"""
 		通过值删除
 		:param value: List[Any]
@@ -178,7 +178,7 @@ class AnyDict:
 					self.dictionary.pop(k)
 				return self
 	
-	def remove_by_values(self, values: List[Any]) -> "AnyDict":
+	def destroy_by_values(self, values: List[Any]) -> "AnyDict":
 		"""
 		通过值删除
 		:param values: List[Any]

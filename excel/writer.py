@@ -76,7 +76,7 @@ class Writer:
 		self.sheet.append(row)
 		return self
 
-	def set_title_row(self, titles: List[str], row_number: int) -> "Writer":
+	def get_title_row(self, titles: List[str], row_number: int) -> "Writer":
 		for col_num, title in enumerate(titles, 1):
 			cell = self.sheet.cell(row=row_number, column=col_num, value=title)
 			cell.font = Font(bold=True)
@@ -99,6 +99,6 @@ class Writer:
 if __name__ == "__main__":
 	# Example usage
 	writer = Writer("example.xlsx")
-	writer.active_sheet_by_index(0).set_title_row(["Title1", "Title2"], 1).add_row(
+	writer.active_sheet_by_index(0).get_title_row(["Title1", "Title2"], 1).add_row(
 		["Data1", "Data2"]
 	).save()

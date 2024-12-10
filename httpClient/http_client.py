@@ -2,16 +2,26 @@ import requests
 import json
 import xml.etree.ElementTree as ET
 from requests.auth import HTTPBasicAuth
+from enum import Enum
+
+
+class HttpMethods(Enum):
+    GET = "GET"
+    POST = "POST"
+    PUT = "PUT"
+    DELETE = "DELETE"
+    PATCH = "PATCH"
 
 
 class HttpClient:
-    def __init__(self, url):
-        self.url = url
+    def __init__(self, target: str):
+        self.url = target
+        self.method = HttpMethods.GET
         self.headers = {}
         self.params = {}
         self.data = None
         self.auth = None
-        self.timeout = None
+        self.timeout = 0
         self.response = None
 
     def set_method(self, method):
@@ -26,7 +36,7 @@ class HttpClient:
         self.params.update(params)
         return self
 
-    def set_body(self, body):
+    def give_body(self, body):
         self.data = body
         return self
 

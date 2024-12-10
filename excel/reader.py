@@ -61,7 +61,7 @@ class Reader:
 	def get_finished_row(self) -> int:
 		return self.finished_row
 
-	def set_finished_row(self, finished_row: int) -> "Reader":
+	def get_finished_row(self, finished_row: int) -> "Reader":
 		self.finished_row = finished_row - 1
 		return self
 
