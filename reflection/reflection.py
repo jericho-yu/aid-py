@@ -10,13 +10,13 @@ class Reflection:
         self.is_zero = obj is None or (self.is_ptr and len(obj) == 0)
         self.is_time = isinstance(obj, time.struct_time)
 
-    def take_value(self):
+    def get_value(self):
         return self.original
 
-    def take_type(self):
+    def get_type(self):
         return self.ref_type
 
-    def take_reflection_type(self):
+    def get_reflection_type(self):
         if self.is_time:
             return "DATETIME"
         if self.is_zero:

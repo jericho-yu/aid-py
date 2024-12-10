@@ -1,4 +1,3 @@
-import time
 from threading import RLock
 from ip_limiter import IpLimiter
 

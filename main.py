@@ -1,11 +1,14 @@
-from fastapi import FastAPI
+from redisPool.redis_pool import RedisPool
+from filesystem.filesystem import FileSystem
 
-app = FastAPI()
+# 示例使用
+if __name__ == "__main__":
+    redis_pool = RedisPool("./redisPool/redis.yaml")
+    redis_pool.get_connection("auth").set("key1","value1")
+    print(redis_pool.get_connection("auth").get("key1"))
 
-@app.get("/")
-def read_root():
-    return {"message": "Hello, World!"}
+    # 关闭单个连接
+    redis_pool.close("auth")
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: str = None):
-    return {"item_id": item_id, "q": q}
+    # 清理所有连接
+    redis_pool.clean()
