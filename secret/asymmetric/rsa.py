@@ -1,76 +1,83 @@
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives import serialization, hashes
+from secret.asymmetric.pem import PemBase64
 import base64
 
+
 class Rsa:
-    """
-    RSA Encryption and Decryption class
-    """
-    def __init__(self):
-        pass
+    def __init__(self,pem:PemBase64):
+        self.pem = pem
+        
+    def set_pem(self, pem: PemBase64) -> "Rsa":
+        """
+        设置 PEM 编码的密钥。
+        
+        参数:
+        pem (PemBase64): PEM 编码的密钥对象。
+        
+        返回:
+        Rsa: 当前 Rsa 对象。
+        """
+        self.pem = pem
+        return self
 
-    def encrypt_by_base64(self, base64_public_key: str, plaintext: bytes) -> bytes:
+    def encrypt(self, plaintext: bytes) -> bytes:
         """
-        Encrypt data using a Base64-encoded public key.
+        使用 PEM 编码的公钥加密明文。
+        
+        参数:
+        plaintext (bytes): 需要加密的明文数据。
+        
+        返回:
+        bytes: 加密后的密文。
         """
-        try:
-            # Decode the Base64 public key
-            pem_public_key = base64.b64decode(base64_public_key)
-            return self.encrypt_by_pem(pem_public_key, plaintext)
-        except Exception as e:
-            raise ValueError(f"Error in encrypt_by_base64: {e}")
+        ciphertext = serialization.load_pem_public_key(
+            self.pem.generate_pem_public_key().get_pem_public_key()
+        ).encrypt(
+            plaintext,
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None,
+            ),
+        )
+        return ciphertext
 
-    def encrypt_by_pem(self, pem_public_key: bytes, plaintext: bytes) -> bytes:
+    def decrypt(self, ciphertext: bytes) -> bytes:
         """
-        Encrypt data using a PEM-encoded public key.
-        """
-        try:
-            # Load the PEM public key
-            public_key = serialization.load_pem_public_key(pem_public_key)
-            # Encrypt the plaintext
-            ciphertext = public_key.encrypt(
-                plaintext,
-                padding.OAEP(
-                    mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                    algorithm=hashes.SHA256(),
-                    label=None
-                )
-            )
-            return ciphertext
-        except Exception as e:
-            raise ValueError(f"Error in encrypt_by_pem: {e}")
+        使用 PEM 私钥解密密文。
 
-    def decrypt_by_base64(self, base64_private_key: str, ciphertext: bytes) -> bytes:
-        """
-        Decrypt data using a Base64-encoded private key.
-        """
-        try:
-            # Decode the Base64 private key
-            pem_private_key = base64.b64decode(base64_private_key)
-            return self.decrypt_by_pem(pem_private_key, ciphertext)
-        except Exception as e:
-            raise ValueError(f"Error in decrypt_by_base64: {e}")
+        参数:
+        ciphertext (bytes): 需要解密的密文。
 
-    def decrypt_by_pem(self, pem_private_key: bytes, ciphertext: bytes) -> bytes:
-        """
-        Decrypt data using a PEM-encoded private key.
+        返回:
+        bytes: 解密后的明文。
+
+        异常:
+        ValueError: 当解密过程中发生错误时抛出异常。
         """
         try:
             # Load the PEM private key
-            private_key = serialization.load_pem_private_key(pem_private_key, password=None)
+            private_key = serialization.load_pem_private_key(
+                self.pem.generate_pem_private_key().get_base64_private_key(), password=None
+            )
             # Decrypt the ciphertext
             plaintext = private_key.decrypt(
                 ciphertext,
                 padding.OAEP(
                     mgf=padding.MGF1(algorithm=hashes.SHA256()),
                     algorithm=hashes.SHA256(),
-                    label=None
-                )
+                    label=None,
+                ),
             )
             return plaintext
         except Exception as e:
             raise ValueError(f"Error in decrypt_by_pem: {e}")
 
-# Example usage
-rsa_instance = Rsa()
-rsa_instance
+if __name__ == "__main__":
+    pem = PemBase64()
+    pem.set_base64_public_key(
+        "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCFbbjNGuqhF3HhmvnZxjG6mS6Q3OmD/vh9voriZTyNCVLJ7y2r0bHZZ7brWwkgtGPQXosZ0IzUZAvlMuZ0m11DiuXZzlCnRz1owwMXKalJeeKQwA8CoJBSy99zCo9fxIErqTMhGwPFCKUaByt8TEIkNq8fUsmqjqqshRLKSazWuwIDAQAB"
+    )
+    rsa = Rsa(pem)
+    ciphertext = rsa.encrypt(plaintext=b"hello world")
