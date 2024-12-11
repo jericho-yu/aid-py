@@ -1,20 +1,19 @@
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives import serialization, hashes
 from secret.asymmetric.pem import PemBase64
-import base64
 
 
 class Rsa:
-    def __init__(self,pem:PemBase64):
+    def __init__(self, pem: PemBase64):
         self.pem = pem
-        
+
     def set_pem(self, pem: PemBase64) -> "Rsa":
         """
         设置 PEM 编码的密钥。
-        
+
         参数:
         pem (PemBase64): PEM 编码的密钥对象。
-        
+
         返回:
         Rsa: 当前 Rsa 对象。
         """
@@ -24,10 +23,10 @@ class Rsa:
     def encrypt(self, plaintext: bytes) -> bytes:
         """
         使用 PEM 编码的公钥加密明文。
-        
+
         参数:
         plaintext (bytes): 需要加密的明文数据。
-        
+
         返回:
         bytes: 加密后的密文。
         """
@@ -57,11 +56,10 @@ class Rsa:
         ValueError: 当解密过程中发生错误时抛出异常。
         """
         try:
-            # Load the PEM private key
             private_key = serialization.load_pem_private_key(
-                self.pem.generate_pem_private_key().get_base64_private_key(), password=None
+                self.pem.generate_pem_private_key().get_pem_private_key(),
+                password=None,
             )
-            # Decrypt the ciphertext
             plaintext = private_key.decrypt(
                 ciphertext,
                 padding.OAEP(
@@ -73,6 +71,7 @@ class Rsa:
             return plaintext
         except Exception as e:
             raise ValueError(f"Error in decrypt_by_pem: {e}")
+
 
 if __name__ == "__main__":
     pem = PemBase64()
