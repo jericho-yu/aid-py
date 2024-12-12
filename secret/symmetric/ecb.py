@@ -43,14 +43,3 @@ class Ecb:
         # decrypt step2: decompress
         decompressed = Zlib.decompress(decrypted)
         print(f"decrypted: {decompressed}")
-
-
-# # 示例用法
-# key = b"Sixteen byte key"  # 密钥必须是16, 24或32字节长
-# data = b"This is some data to encrypt"
-
-# encrypted_data = ecb_encrypt(key, data)
-# print(f"Encrypted: {encrypted_data}")
-
-# decrypted_data = ecb_decrypt(key, encrypted_data)
-# print(f"Decrypted: {decrypted_data}")
