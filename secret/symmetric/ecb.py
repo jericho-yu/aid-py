@@ -8,12 +8,12 @@ from compression.zlib import Zlib
 
 class Ecb:
     @staticmethod
-    def encrypt(self, aes_key: bytes, plaintext: bytes) -> bytes:
+    def encrypt(aes_key: bytes, plaintext: bytes) -> bytes:
         cipher = AES.new(aes_key, AES.MODE_ECB)
         return cipher.encrypt(pad(plaintext, AES.block_size))
 
     @staticmethod
-    def decrypt(self, aes_key: bytes, encrypted: bytes) -> str:
+    def decrypt(aes_key: bytes, encrypted: bytes) -> str:
         cipher = AES.new(aes_key, AES.MODE_ECB)
         return unpad(cipher.decrypt(encrypted), AES.block_size)
 
@@ -29,13 +29,13 @@ class Ecb:
         )
 
         # encrypt step1: zip
-        zipped = Zlib.compress(plaintext)
+        zipped = Zlib.compress(plaintext.encode())
 
         # encrypt step2: encrypt
         encrypted = Ecb.encrypt(aes_key=aes_encrypt.get_aes_key(), plaintext=zipped)
         
         base64Encoded = base64.b64encode(encrypted).decode("utf-8")
-        print("encrypted: {base64Encoded}")
+        print(f"encrypted: {base64Encoded}")
         
         # decrypt step1: decrypt
         decrypted = Ecb.decrypt(aes_key=aes_decrypt.get_aes_key(), encrypted=encrypted)
