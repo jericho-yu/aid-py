@@ -1,7 +1,5 @@
-import asyncio
-from websocketPool.service_pool import WebsocketPool
-
+from dict.any_dict import AnyDict
+from icecream import ic
 
 if __name__ == "__main__":
-    websocket_pool = WebsocketPool()
-    asyncio.run(websocket_pool.serve())
+    

@@ -1,5 +1,6 @@
 annotated-types==0.7.0
 anyio==4.6.2.post1
+asttokens==3.0.0
 async-timeout==5.0.1
 certifi==2024.8.30
 cffi==1.17.1
@@ -10,9 +11,11 @@ crypto==1.4.1
 cryptography==44.0.0
 et_xmlfile==2.0.0
 exceptiongroup==1.2.2
+executing==2.1.0
 fastapi==0.115.5
 gmssl==3.2.2
 h11==0.14.0
+icecream==2.1.3
 idna==3.10
 iniconfig==2.0.0
 Naked==0.1.32
@@ -24,6 +27,7 @@ pycryptodome==3.21.0
 pycryptodomex==3.21.0
 pydantic==2.10.2
 pydantic_core==2.27.1
+Pygments==2.18.0
 pytest==8.3.4
 PyYAML==6.0.2
 redis==5.2.1
